@@ -1,75 +1,57 @@
-
-\
-
-\
-''
-
-
-
 #!/bin/bash
 
-# Me-API Playground Deployment Script
-# This script helps deploy the application to various platforms
+echo "🚀 Portfolio API Deployment Script"
+echo "=================================="
 
-set -e
-
-echo "🚀 Me-API Playground Deployment Script"
-echo "======================================"
-
-# Check if Node.js is installed
-if ! command -v node &> /dev/null; then
-    echo "❌ Node.js is not installed. Please install Node.js v16 or higher."
+# Check if git is initialized
+if [ ! -d ".git" ]; then
+    echo "❌ Git repository not found. Please initialize git first:"
+    echo "   git init"
+    echo "   git add ."
+    echo "   git commit -m 'Initial commit'"
     exit 1
 fi
 
-# Check Node.js version
-NODE_VERSION=$(node -v | cut -d'v' -f2 | cut -d'.' -f1)
-if [ "$NODE_VERSION" -lt 16 ]; then
-    echo "❌ Node.js version 16 or higher is required. Current version: $(node -v)"
+# Check if remote origin exists
+if ! git remote get-url origin &> /dev/null; then
+    echo "❌ No remote origin found. Please add your GitHub repository:"
+    echo "   git remote add origin https://github.com/username/repository.git"
     exit 1
 fi
 
-echo "✅ Node.js version: $(node -v)"
+echo "✅ Git repository configured"
 
-# Install dependencies
-echo "📦 Installing dependencies..."
-npm install
-
-# Initialize database
-echo "🗄️ Initializing database..."
-npm run init-db
-
-# Seed database with sample data
-echo "🌱 Seeding database with sample data..."
-npm run seed-db
+# Push to GitHub
+echo "📤 Pushing to GitHub..."
+git add .
+git commit -m "Deploy - $(date)"
+git push origin main
 
 echo ""
-echo "🎉 Setup completed successfully!"
+echo "🎉 Code pushed to GitHub!"
 echo ""
-echo "To start the application:"
-echo "  Development: npm run dev"
-echo "  Production:  npm start"
+echo "Next steps:"
 echo ""
-echo "The application will be available at:"
-echo "  Frontend: http://localhost:3001"
-echo "  Health:   http://localhost:3001/health"
-echo "  API:      http://localhost:3001/api"
+echo "🌐 For Render Deployment:"
+echo "1. Go to https://render.com"
+echo "2. Click 'New +' → 'Web Service'"
+echo "3. Connect your GitHub repository"
+echo "4. Configure environment variables:"
+echo "   - NODE_ENV=production"
+echo "   - PORT=10000"
+echo "   - DB_HOST=your-database-host"
+echo "   - DB_USER=your-database-user"
+echo "   - DB_PASSWORD=your-database-password"
+echo "   - DB_NAME=your-database-name"
+echo "   - DB_PORT=5432"
+echo "   - CORS_ORIGIN=*"
+echo "5. Click 'Create Web Service'"
 echo ""
-echo "📚 For more information, see the README.md file"
+echo "⚡ For Vercel Deployment:"
+echo "1. Install Vercel CLI: npm install -g vercel"
+echo "2. Run: vercel --prod"
+echo "3. Set environment variables in Vercel dashboard"
 echo ""
-echo "🚀 Ready to deploy!"
+echo "📖 See DEPLOYMENT.md for detailed instructions"
 echo ""
-echo "Deployment options:"
-echo ""
-echo "1. 🌐 Render (Recommended - Easy & Free):"
-echo "   • Connect GitHub repo to Render"
-echo "   • Use render.yaml for automatic setup"
-echo "   • Set environment variables in dashboard"
-echo ""
-echo "2. ⚡ Vercel (Fast & Free):"
-echo "   • Install Vercel CLI: npm i -g vercel"
-echo "   • Login: vercel login"
-echo "   • Deploy: vercel --prod"
-echo ""
-echo "⚠️  IMPORTANT: Update database credentials in Render/Vercel dashboard!"
-echo "⚠️  IMPORTANT: Set NODE_ENV=production in deployment platforms!"
+echo "🚀 Your app will be deployed automatically!"

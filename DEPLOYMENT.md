@@ -1,186 +1,208 @@
-# 🚀 Deployment Guide - Render & Vercel
+# 🚀 Deployment Guide
 
-This guide will walk you through deploying your Me-API Playground to both Render and Vercel.
+This guide will help you deploy your Portfolio API to both Render and Vercel.
 
-## 🌐 Render Deployment
+## 📋 Prerequisites
 
-### Prerequisites
-- GitHub repository with your code
-- Render account (free tier available)
+1. **GitHub Account**: Push your code to GitHub
+2. **PostgreSQL Database**: Set up a production database
+3. **Render Account**: Sign up at [render.com](https://render.com)
+4. **Vercel Account**: Sign up at [vercel.com](https://vercel.com)
 
-### Step 1: Connect to Render
-1. Go to [render.com](https://render.com) and sign up/login
-2. Click "New +" and select "Web Service"
+## 🗄️ Database Setup
+
+### Option 1: Render PostgreSQL (Recommended)
+1. Go to [render.com](https://render.com)
+2. Click "New +" → "PostgreSQL"
+3. Configure your database:
+   - **Name**: `portfolio-db`
+   - **Database**: `portfolio_production`
+   - **User**: `portfolio_user`
+   - **Plan**: Free (or paid for production)
+4. Save the connection details
+
+### Option 2: External PostgreSQL Services
+- [PlanetScale](https://planetscale.com) (Free tier available)
+- [Railway](https://railway.app) (Free tier available)
+- [Supabase](https://supabase.com) (Free tier available)
+
+## 🌐 Deploy to Render
+
+### Step 1: Prepare Your Repository
+```bash
+# Initialize git if not already done
+git init
+git add .
+git commit -m "Initial commit"
+
+# Push to GitHub
+git remote add origin https://github.com/yourusername/your-repo-name.git
+git push -u origin main
+```
+
+### Step 2: Deploy on Render
+1. Go to [render.com](https://render.com)
+2. Click "New +" → "Web Service"
 3. Connect your GitHub repository
-4. Select the repository containing your project
-
-### Step 2: Configure the Service
-- **Name**: `me-api-playground` (or your preferred name)
-- **Environment**: `Node`
-- **Build Command**: `npm install`
-- **Start Command**: `npm start`
-- **Plan**: Free (or upgrade if needed)
+4. Configure the service:
+   - **Name**: `portfolio-api`
+   - **Environment**: `Node`
+   - **Build Command**: `npm install`
+   - **Start Command**: `npm start`
+   - **Plan**: Free
 
 ### Step 3: Set Environment Variables
-In the Render dashboard, add these environment variables:
+In your Render service dashboard, add these environment variables:
 
-```bash
+```env
 NODE_ENV=production
-PORT=3001
+PORT=10000
 DB_HOST=your-database-host
 DB_USER=your-database-user
 DB_PASSWORD=your-database-password
 DB_NAME=your-database-name
-DB_PORT=3306
+DB_PORT=5432
 CORS_ORIGIN=*
 RATE_LIMIT_WINDOW_MS=900000
 RATE_LIMIT_MAX_REQUESTS=100
-LOG_LEVEL=info
 ```
 
 ### Step 4: Deploy
-1. Click "Create Web Service"
-2. Render will automatically build and deploy your app
-3. Wait for the build to complete
-4. Your app will be available at the provided URL
+Click "Create Web Service" and wait for deployment.
 
-### Step 5: Database Setup
-For the database, you have several options:
-1. **Use Render's PostgreSQL** (free tier available)
-2. **External MySQL service** (PlanetScale, AWS RDS, etc.)
-3. **Local database** (for testing only)
+**Your app will be available at**: `https://your-app-name.onrender.com`
 
-## ⚡ Vercel Deployment
+## ⚡ Deploy to Vercel
 
-### Prerequisites
-- Node.js installed locally
-- Vercel CLI installed: `npm i -g vercel`
-
-### Step 1: Prepare Your Project
-1. Ensure your project is in a Git repository
-2. Make sure all dependencies are in `package.json`
-
-### Step 2: Deploy with Vercel CLI
+### Step 1: Install Vercel CLI
 ```bash
-# Navigate to your project directory
-cd /path/to/your/project
+npm install -g vercel
+```
 
-# Login to Vercel (first time only)
-vercel login
-
-# Deploy to production
+### Step 2: Deploy
+```bash
+# Deploy to Vercel
 vercel --prod
 ```
 
-### Step 3: Configure Environment Variables
-During deployment, Vercel will ask for environment variables. Set these:
+### Step 3: Set Environment Variables
+In your Vercel dashboard:
+1. Go to your project settings
+2. Navigate to "Environment Variables"
+3. Add the same environment variables as above
 
+**Your app will be available at**: `https://your-app-name.vercel.app`
+
+## 🔧 Using Deployment Scripts
+
+### Render Deployment
 ```bash
-NODE_ENV=production
-DB_HOST=your-database-host
-DB_USER=your-database-user
-DB_PASSWORD=your-database-password
-DB_NAME=your-database-name
-DB_PORT=3306
-CORS_ORIGIN=*
-RATE_LIMIT_WINDOW_MS=900000
-RATE_LIMIT_MAX_REQUESTS=100
-LOG_LEVEL=info
+# Make script executable
+chmod +x deploy-render.sh
+
+# Run deployment
+./deploy-render.sh
 ```
 
-### Step 4: Verify Deployment
-1. Vercel will provide you with a deployment URL
-2. Test your endpoints:
-   - Health check: `https://your-app.vercel.app/health`
-   - API: `https://your-app.vercel.app/api/profile`
+### Vercel Deployment
+```bash
+# Make script executable
+chmod +x deploy-vercel.sh
 
-## 🔧 Database Setup Options
+# Run deployment
+./deploy-vercel.sh
+```
 
-### Option 1: Render PostgreSQL (Recommended for Render)
-1. Create a new PostgreSQL service in Render
-2. Use the connection details in your environment variables
-3. Update your database connection to use PostgreSQL
+## 🧪 Testing Your Deployment
 
-### Option 2: PlanetScale MySQL (Recommended for Vercel)
-1. Go to [planetscale.com](https://planetscale.com)
-2. Create a new database
-3. Use the connection details in your environment variables
+### Health Check
+```bash
+curl https://your-app-name.onrender.com/health
+curl https://your-app-name.vercel.app/health
+```
 
-### Option 3: External MySQL Service
-1. Use any MySQL-compatible service (AWS RDS, Google Cloud SQL, etc.)
-2. Configure network access and security
-3. Use the connection details in your environment variables
+### API Endpoints
+```bash
+# Profile
+curl https://your-app-name.onrender.com/api/profile
 
-## 🚨 Important Notes
+# Skills
+curl https://your-app-name.onrender.com/api/skills
+
+# Projects
+curl https://your-app-name.onrender.com/api/projects
+
+# Search
+curl "https://your-app-name.onrender.com/api/search?q=JavaScript"
+```
+
+### Frontend
+- **Main App**: `https://your-app-name.onrender.com`
+- **Admin Panel**: `https://your-app-name.onrender.com/admin`
+
+## 🔒 Security Considerations
+
+### Environment Variables
+- Never commit `.env` files to git
+- Use environment variables for all sensitive data
+- Rotate database passwords regularly
 
 ### CORS Configuration
-- For production, update `CORS_ORIGIN` to your actual frontend domain
-- Avoid using `*` in production for security
-
-### Database Security
-- Never commit database credentials to Git
-- Use environment variables for all sensitive data
-- Consider using connection pooling for production
+- Set `CORS_ORIGIN` to your specific domain in production
+- Avoid using `*` in production
 
 ### Rate Limiting
-- Adjust rate limits based on your expected traffic
-- Monitor usage to prevent abuse
+- Adjust rate limits based on your needs
+- Monitor usage and adjust accordingly
 
-### Health Checks
-- Both platforms will use `/health` endpoint for monitoring
-- Ensure this endpoint responds quickly
+## 📊 Monitoring
 
-## 🔍 Troubleshooting
+### Render
+- Built-in logging and monitoring
+- Automatic restarts on crashes
+- Performance metrics
 
-### Common Issues
-
-1. **Build Failures**
-   - Check Node.js version compatibility
-   - Ensure all dependencies are in `package.json`
-   - Verify build commands are correct
-
-2. **Database Connection Issues**
-   - Verify database credentials
-   - Check network access and firewall rules
-   - Ensure database is running and accessible
-
-3. **Environment Variable Issues**
-   - Double-check variable names and values
-   - Restart the service after changing variables
-   - Check for typos in variable names
-
-4. **CORS Issues**
-   - Verify `CORS_ORIGIN` is set correctly
-   - Check browser console for CORS errors
-   - Test with Postman or similar tool
-
-### Getting Help
-- Check the platform's documentation
-- Review build logs for specific error messages
-- Test locally with production environment variables
-
-## 🎉 Success Checklist
-
-- [ ] App deploys successfully
-- [ ] Health check endpoint responds
-- [ ] Database connection works
-- [ ] API endpoints are accessible
-- [ ] Frontend loads correctly
-- [ ] Environment variables are set
-- [ ] Monitoring and logging work
-- [ ] SSL/HTTPS is enabled (automatic on both platforms)
+### Vercel
+- Function execution logs
+- Performance analytics
+- Error tracking
 
 ## 🔄 Continuous Deployment
 
 Both platforms support automatic deployments:
-- **Render**: Automatically deploys on Git push to main branch
-- **Vercel**: Automatically deploys on Git push to main branch
+- **Render**: Deploys on every push to main branch
+- **Vercel**: Deploys on every push to main branch
 
-To enable:
-1. Connect your GitHub repository
-2. Configure deployment settings
-3. Push changes to trigger automatic deployment
+## 🆘 Troubleshooting
 
----
+### Common Issues
 
-**Happy Deploying! 🚀**
+1. **Database Connection Failed**
+   - Check database credentials
+   - Verify database is accessible
+   - Check firewall settings
+
+2. **Build Failed**
+   - Check Node.js version compatibility
+   - Verify all dependencies are in package.json
+   - Check build logs for errors
+
+3. **Environment Variables Not Set**
+   - Verify all required variables are set
+   - Check variable names match exactly
+   - Redeploy after setting variables
+
+### Getting Help
+- Check platform-specific documentation
+- Review build and runtime logs
+- Test locally with production environment variables
+
+## 🎉 Success!
+
+Once deployed, your portfolio API will be:
+- ✅ Accessible worldwide
+- ✅ Automatically scaled
+- ✅ Monitored and logged
+- ✅ Continuously deployed
+
+Share your portfolio with the world! 🌍
